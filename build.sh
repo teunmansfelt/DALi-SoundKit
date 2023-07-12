@@ -201,7 +201,7 @@ run_after_build() {
 # === MAIN ====================================================================
 main() {
     BUILD_CONFIG["BUILD_MODE"]=default
-    BUILD_CONFIG["CFLAGS"]="-Wall -Wextra -pedantic -sdt=gnu11"
+    BUILD_CONFIG["CFLAGS"]="-Wall -Wextra -std=gnu11"
     CLEAN_BEFORE_BUILD="no"
     RUN_AFTER_BUILD="no"
 

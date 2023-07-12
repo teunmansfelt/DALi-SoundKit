@@ -77,10 +77,10 @@
     }
 
     // Log macros
-    #define INFO(...)  i_dali_debug_print_internal("INFO",  i_utils_colour_green, __FILE__, __LINE__, __VA_ARGS__)
-    #define DEBUG(...) i_dali_debug_print_internal("Debug", i_utils_colour_none,  __FILE__, __LINE__, __VA_ARGS__)
+    #define INFO(...)  i_dali_debug_print_internal("INFO",  i_dali_core_colour_green, __FILE__, __LINE__, __VA_ARGS__)
+    #define DEBUG(...) i_dali_debug_print_internal("Debug", i_dali_core_colour_none,  __FILE__, __LINE__, __VA_ARGS__)
     #define TRACE(...) i_dali_trace_print_internal(__FILE__, __LINE__, __VA_ARGS__);
-    #define TODO(...)  i_dali_debug_print_internal("TODO",  i_utils_colour_blue,  __FILE__, __LINE__, __VA_ARGS__)
+    #define TODO(...)  i_dali_debug_print_internal("TODO",  i_dali_core_colour_blue,  __FILE__, __LINE__, __VA_ARGS__)
 #else
     #define INFO(...)
     #define DEBUG(...)
