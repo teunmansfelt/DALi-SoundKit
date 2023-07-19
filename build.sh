@@ -60,10 +60,10 @@ read_command_line() {
                 BUILD_CONFIG["BUILD_MODE"]=${arg}
                 ;;
             --clean)
-                CLEAN_BEFORE_BUILD="yes"
+                BUILD_CONFIG["FORCE_CLEAN_BUILD"]="YES"
                 ;;
             --run)
-                RUN_AFTER_BUILD="yes"
+                BUILD_CONFIG["RUN_AFTER_BUILD"]="YES"
                 ;;
             *)
                 usage
@@ -105,11 +105,11 @@ read_build_config_file() {
     return 1  # The target was not found.
 }
 
-configure_TARGET_BIN_format() {
-    local TARGET_BIN_format=${BUILD_CONFIG["TARGET_BIN_FORMAT"]}
+configure_target_bin_format() {
+    local target_bin_format=${BUILD_CONFIG["TARGET_BIN_FORMAT"]}
     local -n cflags=BUILD_CONFIG["CFLAGS"]
 
-    case ${TARGET_BIN_format} in
+    case ${target_bin_format} in
         executable)
             ;;
         library)
@@ -151,7 +151,7 @@ configure_build_mode() {
 clean_before_build() {
     local target=${BUILD_CONFIG["TARGET_BIN_NAME"]}
 
-    if [ ${CLEAN_BEFORE_BUILD} = "yes" ]; then
+    if [ ${BUILD_CONFIG["FORCE_CLEAN_BUILD"]} = "YES" ]; then
         info "Cleaning ${target}" "..."
         make clean
     fi
@@ -159,22 +159,22 @@ clean_before_build() {
 
 build_target() {
     local target=${BUILD_CONFIG["TARGET"]}
-    local TARGET_BIN_name=${BUILD_CONFIG["TARGET_BIN_NAME"]}
-    local TARGET_BIN_format=${BUILD_CONFIG["TARGET_BIN_FORMAT"]}
+    local target_bin_name=${BUILD_CONFIG["TARGET_BIN_NAME"]}
+    local target_bin_format=${BUILD_CONFIG["TARGET_BIN_FORMAT"]}
     local build_mode=${BUILD_CONFIG["BUILD_MODE"]}
     local cflags=${BUILD_CONFIG["CFLAGS"]}
     local libs=${BUILD_CONFIG["LIBS"]}
     
     info "Building ${target}" "..."
-    make ${TARGET_BIN_format}
+    make ${target_bin_format}
     if [ $? -ne 0 ]; then
         error "Could not build '${target}'"
         exit
     fi
 
     info "BUILD_SUMMARY" ""
-    echo "   - Target        : ${TARGET_BIN_name}"
-    echo "   - Target format : ${TARGET_BIN_format}"
+    echo "   - Target        : ${target_bin_name}"
+    echo "   - Target format : ${target_bin_format}"
     echo "   - Build mode    : ${build_mode}"
     echo "   - CFLAGS        : ${cflags}"
     echo "   - Dependencies  : ${libs}"
@@ -182,10 +182,10 @@ build_target() {
 
 run_after_build() {
     local target=${BUILD_CONFIG["TARGET_BIN_NAME"]}
-    local TARGET_BIN_format=${BUILD_CONFIG["TARGET_BIN_FORMAT"]}
+    local target_bin_format=${BUILD_CONFIG["TARGET_BIN_FORMAT"]}
 
-    if [ ${RUN_AFTER_BUILD} = "yes" ]; then
-        if [ ${TARGET_BIN_format} = "executable" ]; then
+    if [ ${BUILD_CONFIG["RUN_AFTER_BUILD"]} = "YES" ]; then
+        if [ ${target_bin_format} = "executable" ]; then
             info "Running ${target}" "..."
             ./bin/${target}
         else
@@ -212,7 +212,7 @@ main() {
         error "No target name specified in build configuration of ${BUILD_CONFIG["TARGET"]}."
         exit
     fi
-    configure_TARGET_BIN_format
+    configure_target_bin_format
     configure_build_mode
 
     TARGET=${BUILD_CONFIG["TARGET"]}
